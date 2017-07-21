@@ -1,4 +1,6 @@
 {
+    "name": "graphitedigital/deployer-bootstrapper",
+    "description": "Standardised deployment for Graphite using Deployer",
     "autoload": {
         "psr-4": {
             "Graphite\\Deployer\\": "src/Graphite/Deployer"
