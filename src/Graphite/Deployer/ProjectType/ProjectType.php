@@ -4,6 +4,8 @@ namespace Graphite\Deployer\ProjectType;
 
 interface ProjectType
 {
+    public function setRecipeDirectory($recipeDirectory);
+
     public function getSharedFiles();
 
     public function getSharedDirectories();
