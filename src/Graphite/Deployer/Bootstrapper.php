@@ -2,18 +2,26 @@
 
 namespace Graphite\Deployer;
 
+use Deployer\Deployer;
 use Graphite\Deployer\ProjectType\ProjectType;
 
 class Bootstrapper
 {
-    private $options;
-    private $repository;
+    private $options = [];
+    private $recipeDirectory = "";
 
     public static function register(ProjectType $projectType, $options = [])
     {
+        // Load in common tasks/similar from Deployer
+        $recipeDirectory = self::getRecipeDirectory();
+        $projectType->setRecipeDirectory($recipeDirectory);
+
         // Return an instance of this class post-configuration
         $instance = new self;
         $instance->mergeOptions($options);
+
+        $instance->recipeDirectory = $recipeDirectory;
+        $instance->loadCommonTasks();
 
         $instance->determineRepository();
         $instance->configureSSH();
@@ -21,13 +29,31 @@ class Bootstrapper
         $instance->configureInventory();
         $instance->configureForProjectType($projectType);
 
+        // Unlock after failed deploys to allow retries
+        \Deployer\after("deploy:failed", "deploy:unlock");
+
         return $instance;
+    }
+
+    private static function getRecipeDirectory()
+    {
+        // Get Deployer recipe directory
+        $reflection = new \ReflectionClass(Deployer::class);
+        $filename = $reflection->getFileName();
+        $directory = basename(dirname($filename));
+
+        return $directory . "/../recipe";
     }
 
     private function mergeOptions(array $options)
     {
         $default = [];
         $this->options = array_merge($default, $options);
+    }
+
+    private function loadCommonTasks()
+    {
+        require_once $this->recipeDirectory . "/common.php";
     }
 
     private function determineRepository()
@@ -38,8 +64,8 @@ class Bootstrapper
         if ($returnStatus !== 0) {
             throw new \RuntimeException("No git repository found");
         }
-        $this->repository = trim($output[0]);
-        \Deployer\set('repository', $this->repository);
+        $repository = trim($output[0]);
+        \Deployer\set('repository', $repository);
     }
 
     private function configureSSH()
