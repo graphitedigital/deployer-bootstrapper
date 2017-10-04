@@ -7,6 +7,6 @@
         }
     },
     "require": {
-        "deployer/deployer": "^5.1"
+        "deployer/deployer": "^6.0"
     }
 }
