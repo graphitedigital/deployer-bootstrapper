@@ -58,6 +58,12 @@ class Bootstrapper
 
     private function determineRepository()
     {
+        if (isset($this->options["repository"])) {
+            \Deployer\set('repository', $this->options["repository"]);
+
+            return;
+        }
+
         $returnStatus = 0;
         $output = [];
         exec("git remote get-url origin 2>/dev/null", $output, $returnStatus);
