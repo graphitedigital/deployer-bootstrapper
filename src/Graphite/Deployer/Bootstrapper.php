@@ -9,6 +9,7 @@ class Bootstrapper
 {
     private $options = [];
     private $recipeDirectory = "";
+    private $internalTasks;
 
     public static function register(ProjectType $projectType, $options = [])
     {
@@ -54,6 +55,8 @@ class Bootstrapper
     private function loadCommonTasks()
     {
         require_once $this->recipeDirectory . "/common.php";
+        $this->internalTasks = new Tasks();
+        $this->internalTasks->registerTasks();
     }
 
     private function determineRepository()
