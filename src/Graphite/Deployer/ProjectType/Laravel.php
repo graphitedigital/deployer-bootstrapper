@@ -57,7 +57,7 @@ class Laravel implements ProjectType
             "graphite:laravel:artisan_migrate",
             "deploy:symlink",
             "deploy:unlock",
-            "graphite:php:restart"
+            "graphite:php:restart",
             "cleanup",
         ];
     }
