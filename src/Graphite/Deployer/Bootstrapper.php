@@ -95,12 +95,13 @@ class Bootstrapper
 
     private function configureForProjectType(ProjectType $projectType)
     {
+        // Task configuration
+        // Do this first, as Deployer then somehow resets all the following variables...
+        \Deployer\task("deploy", $projectType->getDeployTasks());
+
         \Deployer\set("shared_dirs", $projectType->getSharedDirectories());
         \Deployer\set("shared_files", $projectType->getSharedFiles());
         \Deployer\set("writable_dirs", $projectType->getWritableDirectories());
         \Deployer\set("copy_dirs", $projectType->getCopyDirectories());
-
-        // Task configuration
-        \Deployer\task("deploy", $projectType->getDeployTasks());
     }
 }
